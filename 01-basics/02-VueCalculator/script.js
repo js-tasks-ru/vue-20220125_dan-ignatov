@@ -1,7 +1,7 @@
 import { createApp, defineComponent } from './vendor/vue.esm-browser.js';
 
 // Создайте Vue приложение
-class calculator {
+class Calculator {
     static sum(left, right) {
         return left + right;
     }
@@ -24,13 +24,14 @@ const MyCalculator = defineComponent({
         return {
             left: 2,
             right: 3,
-            operation: 'divide'
+            operation: 'divide',
+            Calculator
         };
     },
 
     computed: {
         result() {
-            return calculator[this.operation](this.left, this.right);
+            return Calculator[this.operation](this.left, this.right);
         }
     }
 });

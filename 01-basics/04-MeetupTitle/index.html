@@ -18,6 +18,19 @@
       </div>
     </div>
 
+    <div id="app2">
+      <div>
+        <label v-for="meetup in meetupList2">
+          <input type="radio" :value="meetup.id" v-model="selectedMeetupId" />
+          {{ meetup.id }}
+        </label>
+    
+        <hr />
+    
+        <h3>{{ selectedMeetupTitle }}</h3>
+      </div>
+    </div>
+
     <script type="module" src="script.js"></script>
   </body>
 </html>

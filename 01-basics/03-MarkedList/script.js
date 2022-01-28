@@ -1,4 +1,3 @@
-// import { create } from 'core-js/core/object';
 import { createApp, defineComponent } from './vendor/vue.esm-browser.js';
 
 // From https://jsonplaceholder.typicode.com/comments

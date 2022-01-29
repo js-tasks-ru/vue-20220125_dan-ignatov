@@ -43,6 +43,9 @@ const MeetupSelector = {
     selectedMeetupId: {
       immediate: true,
       async handler(newValue) {
+        // TODO: возможны гонки когда результаты первого запроса придут позже второго запроса и заменят его данные
+        // selectedMeetupId будет ссылаться на новый, а selectedMeetupTitle будет показывать данные старого
+        // Еще нужно сохранять ссылку на начатый запрос и явно отменять его перед началом нового запроса
         const meetup = await fetchMeetupById(newValue);
         this.selectedMeetupTitle = meetup?.title;
       }

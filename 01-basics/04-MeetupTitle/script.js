@@ -67,6 +67,7 @@ const MeetupSelector2 = {
     return {
       meetupList2: [],
       selectedMeetupId: undefined, // explicit declaration is required to create a proxied property, track changes and call 'watch'
+      selectedMeetupTitle: undefined // I don't watch it, but it's better to declare all props at once as "IMeetupSelector2$Data"
     }
   },
 

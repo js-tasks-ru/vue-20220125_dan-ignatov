@@ -12,16 +12,6 @@ export default defineComponent({
       required: true,
     },
   },
-  // {
-  //   id: 35,
-  //   startsAt: '07:30',
-  //   endsAt: '09:00',
-  //   type: 'registration',
-  //   title: null,
-  //   description: null,
-  //   speaker: null,
-  //   language: null,
-  // },
 
   computed: {
     icon() {

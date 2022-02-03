@@ -1,4 +1,3 @@
-//import string from 'lodash-es/string';
 import { defineComponent } from './vendor/vue.esm-browser.js';
 
 export default defineComponent({

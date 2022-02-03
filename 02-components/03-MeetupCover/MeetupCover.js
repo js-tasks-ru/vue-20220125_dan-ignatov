@@ -12,7 +12,7 @@ export default defineComponent({
 
   computed: {
     style() {
-      return this.image && `--bg-url: url('${this.image}')`;
+      return this.image ? `--bg-url: url('${this.image}')` : '';
     },
   },
 

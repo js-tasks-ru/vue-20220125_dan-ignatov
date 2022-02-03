@@ -12,10 +12,6 @@ const states = {
   error: 'error',
   success: 'success',
 
-  includes(value) {
-    return [this.states.loading, this.states.error, this.states.success].includes(value);
-  },
-
   isLoading(value) {
     return value === this.loading;
   },
@@ -78,8 +74,9 @@ export default defineComponent({
           this.meetup = await fetchMeetupById(newValue);
           if (this.meetup) {
             this.state = states.success;
+          } else {
+            this.state = states.error;
           }
-          this.state = states.error;
         } catch (err) {
           this.state = states.error;
           this.errorMessage = err.message;

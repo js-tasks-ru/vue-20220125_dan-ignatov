@@ -26,7 +26,7 @@ export default defineComponent({
   },
 
   computed: {
-    isAgendaContainsItems() {
+    hasAgendaItems() {
       return this.meetup.agenda?.length > 0;
     },
   },
@@ -41,7 +41,7 @@ export default defineComponent({
             <h3>Описание</h3>
             <MeetupDescription :description="meetup.description" />
 
-            <template v-if="isAgendaContainsItems">
+            <template v-if="hasAgendaItems">
               <h3>Программа</h3>
               <MeetupAgenda :agenda="meetup.agenda"/>
             </template>

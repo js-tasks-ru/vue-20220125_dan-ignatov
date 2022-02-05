@@ -19,9 +19,8 @@ export default {
 
   computed: {
     cssVars() {
-      // Внутри v-bind('meetupCoverBackgroungImage') работает почти как мой cssVars: всегда прописывает в style свою переменную:
-      // style="--2b039ab4-meetupCoverBackgroungImage:url(https\:\/\/course-vue\.javascript\.ru\/api\/images\/3);"
-      // UA поддерживают вложенность "var(--2b039ab4-meetupCoverBackgroungImage)" когда значение "var(--default-cover)"
+      // Переопределяю если есть свое значение (vue не впишет null в атрибут 'style')
+      // Иначе остается значение из переменной выше по DOM
       return {
         '--default-cover': this.image ? `url(${this.image})` : null,
       };

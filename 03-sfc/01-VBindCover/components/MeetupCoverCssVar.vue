@@ -1,12 +1,12 @@
 <template>
-  <div class="meetup-cover">
+  <div class="meetup-cover" :style="cssVars">
     <h1 class="meetup-cover__title">{{ title }}</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'MeetupCover',
+  name: 'MeetupCoverCssVar',
 
   props: {
     title: {
@@ -18,8 +18,13 @@ export default {
   },
 
   computed: {
-    meetupCoverBackgroungImage() {
-      return this.image ? `url(${this.image})` : 'var(--default-cover)';
+    cssVars() {
+      // Внутри v-bind('meetupCoverBackgroungImage') работает почти как мой cssVars: всегда прописывает в style свою переменную:
+      // style="--2b039ab4-meetupCoverBackgroungImage:url(https\:\/\/course-vue\.javascript\.ru\/api\/images\/3);"
+      // UA поддерживают вложенность var(var(--default-cover))
+      return {
+        '--default-cover': this.image ? `url(${this.image})` : null,
+      };
     },
   },
 };
@@ -29,7 +34,7 @@ export default {
 .meetup-cover {
   background-size: cover;
   background-position: center;
-  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), v-bind('meetupCoverBackgroungImage');
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), var(--default-cover);
   display: flex;
   flex-direction: column;
   align-items: center;

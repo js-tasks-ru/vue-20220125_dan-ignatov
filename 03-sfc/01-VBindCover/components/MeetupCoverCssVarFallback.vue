@@ -1,12 +1,12 @@
 <template>
-  <div class="meetup-cover">
+  <div class="meetup-cover" :style="cssVars">
     <h1 class="meetup-cover__title">{{ title }}</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'MeetupCover',
+  name: 'MeetupCoverCssVarFallback',
 
   props: {
     title: {
@@ -18,8 +18,10 @@ export default {
   },
 
   computed: {
-    meetupCoverBackgroungImage() {
-      return this.image ? `url(${this.image})` : 'var(--default-cover)';
+    cssVars() {
+      return {
+        '--meetupCoverBackgroungImage': this.image ? `url(${this.image})` : null,
+      };
     },
   },
 };
@@ -29,7 +31,8 @@ export default {
 .meetup-cover {
   background-size: cover;
   background-position: center;
-  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), v-bind('meetupCoverBackgroungImage');
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    var(--meetupCoverBackgroungImage, var(--default-cover));
   display: flex;
   flex-direction: column;
   align-items: center;

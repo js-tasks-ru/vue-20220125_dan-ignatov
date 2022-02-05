@@ -45,7 +45,7 @@ export default {
     return {
       meetupWithImage: {
         title: 'VueConf US',
-        image: 'https://course-vue.javascript.ru/api/images/3',
+        image: 'https://course-vue.javascript.ru/api/images/5',
       },
       meetupWithoutImage: {
         title: 'Demo meetup',

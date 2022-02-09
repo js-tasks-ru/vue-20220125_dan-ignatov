@@ -36,7 +36,7 @@ const MeetupSelector = {
       MeetupList,
       selectedMeetupId: MeetupList[0],
       selectedMeetupTitle: 'MEETUP_TITLE',
-    }
+    };
   },
 
   watch: {
@@ -48,13 +48,13 @@ const MeetupSelector = {
         // Еще нужно сохранять ссылку на начатый запрос и явно отменять его перед началом нового запроса
         const meetup = await fetchMeetupById(newValue);
         this.selectedMeetupTitle = meetup?.title;
-      }
+      },
       // async selectedMeetupId(newValue) {
       //   const meetup = await fetchMeetupById(newValue);
       //   this.selectedMeetupTitle = meetup.title;
       // }
-    }
-  }
+    },
+  },
 };
 
 const app = createApp(MeetupSelector);
@@ -67,8 +67,8 @@ const MeetupSelector2 = {
     return {
       meetupList2: [],
       selectedMeetupId: undefined, // explicit declaration is required to create a proxied property, track changes and call 'watch'
-      selectedMeetupTitle: undefined // I don't watch it, but it's better to declare all props at once as "IMeetupSelector2$Data"
-    }
+      selectedMeetupTitle: undefined, // I don't watch it, but it's better to declare all props at once as "IMeetupSelector2$Data"
+    };
   },
 
   async mounted() {
@@ -80,10 +80,10 @@ const MeetupSelector2 = {
     selectedMeetupId: {
       immediate: true,
       handler(newValue) {
-        this.selectedMeetupTitle = this.meetupList2.find(item => item.id === newValue)?.title;
-      }
-    }
-  }
+        this.selectedMeetupTitle = this.meetupList2.find((item) => item.id === newValue)?.title;
+      },
+    },
+  },
 };
 
 const app2 = createApp(MeetupSelector2);

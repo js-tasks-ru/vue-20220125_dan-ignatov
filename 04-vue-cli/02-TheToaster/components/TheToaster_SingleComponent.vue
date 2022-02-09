@@ -55,7 +55,8 @@ export default {
       this.items.push(newItem);
       newItem.timeoutId = setTimeout(
         () => (this.items = this.items.filter((item) => item.key !== newItem.key)),
-        leaveTimeout);
+        leaveTimeout,
+      );
     },
     success(message) {
       this._addItem('success', message);

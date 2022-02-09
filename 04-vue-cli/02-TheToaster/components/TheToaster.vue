@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import TheToast from './TheToast';
+import TheToast, { ToastTypes } from './TheToast';
 
 const leaveTimeout = 5000;
 
@@ -47,10 +47,10 @@ export default {
       );
     },
     success(message) {
-      this._addItem('success', message);
+      this._addItem(ToastTypes.success.name, message);
     },
     error(message) {
-      this._addItem('error', message);
+      this._addItem(ToastTypes.error.name, message);
     },
   },
 };

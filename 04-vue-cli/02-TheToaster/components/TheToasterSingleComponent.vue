@@ -35,7 +35,7 @@ function createToasterDataItem(type, message) {
 }
 
 export default {
-  name: 'TheToaster',
+  name: 'TheToasterSingleComponent',
 
   components: { UiIcon },
 

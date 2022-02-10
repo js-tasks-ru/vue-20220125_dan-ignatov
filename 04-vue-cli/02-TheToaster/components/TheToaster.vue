@@ -2,7 +2,7 @@
   <div class="toasts">
     <template v-for="item in items" :key="item.key">
       <div class="ToasterItem">
-        <the-toast :type="item.type" :message="item.message"></the-toast>
+        <the-toast :type="item.type">{{ item.message }}</the-toast>
       </div>
     </template>
   </div>
@@ -11,14 +11,13 @@
 <script>
 import TheToast, { ToastTypes } from './TheToast';
 
-const leaveTimeout = 5000;
+const closeToastTimeout = 5000;
 
 function createToasterDataItem(type, message) {
   return {
-    key: new Date().getTime() + message + type, // I don't think we need uuid in learning samples
     type,
     message,
-    leaveTimeout,
+    closeToastTimeout,
   };
 }
 
@@ -40,11 +39,12 @@ export default {
   methods: {
     _addItem(type, message) {
       const newItem = createToasterDataItem(type, message);
-      this.items.push(newItem);
       newItem.timeoutId = setTimeout(
         () => (this.items = this.items.filter((item) => item.key !== newItem.key)),
-        leaveTimeout,
+        closeToastTimeout,
       );
+      newItem.key = newItem.timeoutId;
+      this.items.push(newItem);
     },
     success(message) {
       this._addItem(ToastTypes.success.name, message);
@@ -76,6 +76,6 @@ export default {
 }
 
 .ToasterItem + .ToasterItem {
-  margin-top: 20px;
+  padding-top: 20px;
 }
 </style>

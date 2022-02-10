@@ -1,7 +1,7 @@
 <template>
   <div class="toast" :class="cssClass">
     <ui-icon class="toast__icon" :icon="iconName" />
-    <span>{{ message }}</span>
+    <slot />
   </div>
 </template>
 
@@ -29,10 +29,6 @@ export default {
   components: { UiIcon },
 
   props: {
-    message: {
-      type: String,
-      required: true,
-    },
     type: {
       type: String,
       required: true,

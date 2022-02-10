@@ -1,5 +1,5 @@
 <template>
-  <div class="toasts">
+  <div class="toasts" :class="cssClass">
     <template v-for="item in items" :key="item.key">
       <div class="ToasterItem">
         <the-toast :type="item.type">{{ item.message }}</the-toast>
@@ -11,25 +11,35 @@
 <script>
 import TheToast, { ToastTypes } from './TheToast';
 
-const closeToastTimeout = 5000;
-
-function createToasterDataItem(type, message) {
-  return {
-    type,
-    message,
-    closeToastTimeout,
-  };
-}
-
 export default {
   name: 'TheToaster',
 
   components: { TheToast },
 
+  props: {
+    closeToastTimeout: {
+      type: Number,
+      default: 5000,
+    },
+    toastsAlign: {
+      type: String,
+      default: 'right',
+    },
+  },
+
   data() {
     return {
       items: new Array(),
     };
+  },
+
+  computed: {
+    cssClass() {
+      return {
+        toast_alignRight: this.toastsAlign === 'right',
+        toast_alignLeft: this.toastsAlign !== 'right',
+      };
+    },
   },
 
   beforeUnmount() {
@@ -38,10 +48,10 @@ export default {
 
   methods: {
     _addItem(type, message) {
-      const newItem = createToasterDataItem(type, message);
+      const newItem = { type, message };
       newItem.timeoutId = setTimeout(
         () => (this.items = this.items.filter((item) => item.key !== newItem.key)),
-        closeToastTimeout,
+        this.closeToastTimeout,
       );
       newItem.key = newItem.timeoutId;
       this.items.push(newItem);
@@ -60,7 +70,6 @@ export default {
 .toasts {
   position: fixed;
   bottom: 8px;
-  right: 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -68,10 +77,25 @@ export default {
   z-index: 999;
 }
 
+.toast_alignRight {
+  right: 8px;
+}
+
+.toast_alignLeft {
+  left: 8px;
+}
+
 @media all and (min-width: 992px) {
   .toasts {
     bottom: 72px;
+  }
+
+  .toast_alignRight {
     right: 112px;
+  }
+
+  .toast_alignLeft {
+    left: 112px;
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <the-toaster ref="toaster" />
+  <the-toaster ref="toaster" close-toast-timeout="2000" toastsAlign="left" />
   <p>
     <button @click="success">Add Success Message</button>
     <button @click="error">Add Error Message</button>
@@ -8,7 +8,7 @@
   <hr style="margin: 20px 0"/>
   TheToasterSingleComponent
 
-  <the-toaster-single-component ref="toasterSingleComponent" />
+  <the-toaster-single-component ref="toasterSingleComponent" toastsAlign="left" />
   <p>
     <button @click="successSingleComponent">Add Success Message</button>
     <button @click="errorSingleComponent">Add Error Message</button>

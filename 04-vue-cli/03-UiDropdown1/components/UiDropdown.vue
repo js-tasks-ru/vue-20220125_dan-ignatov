@@ -1,19 +1,31 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="cssClass">
+    <button type="button" class="dropdown__toggle" :class="cssClassButton" @click="toggleDropDown">
+      <ui-icon :icon="displayIcon" class="dropdown__icon" />
+      <span>{{ displayText }}</span>
     </button>
 
     <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
+      <button
+        v-for="optionItem in options"
+        :key="optionItem.value"
+        class="dropdown__item"
+        :class="cssClassDropDownItem"
+        role="option"
+        type="button"
+        @click="onItemClicked(optionItem.value)"
+      >
+        <ui-icon v-if="optionItem.icon" :icon="optionItem.icon" class="dropdown__icon" />
+        {{ optionItem.text }}
+      </button>
+      <!-- <button class="dropdown__item dropdown__item_icon" role="option" type="button">
         <ui-icon icon="tv" class="dropdown__icon" />
         Option 1
       </button>
       <button class="dropdown__item dropdown__item_icon" role="option" type="button">
         <ui-icon icon="tv" class="dropdown__icon" />
         Option 2
-      </button>
+      </button> -->
     </div>
   </div>
 </template>
@@ -25,6 +37,88 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    // Default property name for 'v-model="selectedType"'
+    modelValue: {
+      type: String,
+      // validator: see this.methods.validateProps
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+
+  emits: { onItemSelected: null },
+
+  // data: function() {
+  //   return {
+  //     selectedValue,
+  //   };
+  // },
+
+  data() {
+    return {
+      isDropDownOpened: false,
+      hasIconsInOptions: false,
+    };
+  },
+
+  computed: {
+    cssClass() {
+      return {
+        dropdown_opened: this.isDropDownOpened,
+      };
+    },
+    cssClassButton() {
+      return {
+        dropdown__toggle_icon: this.hasIconsInOptions,
+      };
+    },
+    cssClassDropDownItem() {
+      return {
+        dropdown__item_icon: this.hasIconsInOptions,
+      };
+    },
+    displayText() {
+      const displayText = this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.text;
+      return displayText || this.modelValue || this.title;
+    },
+    displayIcon() {
+      return this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon;
+    },
+  },
+
+  watch: {
+    $props: {
+      immediate: true,
+      handler() {
+        this.validateProps();
+        this.hasIconsInOptions = this.options?.find((item) => item.icon);
+      },
+    },
+  },
+
+  methods: {
+    toggleDropDown() {
+      this.isDropDownOpened = !this.isDropDownOpened;
+    },
+    validateProps() {
+      if (this.modelValue && this.options && !this.options.find((item) => item.value === this.modelValue)) {
+        // eslint-disable-next-line no-console
+        console.error(`${this.$.type.name}: The 'options' array doesn't contain the '${this.modelValue}' value`);
+      }
+    },
+    onItemClicked(value) {
+      this.isDropDownOpened = false;
+      this.$emit('onItemSelected', value);
+    },
+  },
 };
 </script>
 

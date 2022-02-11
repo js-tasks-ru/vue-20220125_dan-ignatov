@@ -47,7 +47,7 @@ const MarkedList = defineComponent({
         };
       });
     },
-  }
+  },
 });
 
 const app = createApp(MarkedList);

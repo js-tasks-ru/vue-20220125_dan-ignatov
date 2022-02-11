@@ -5,16 +5,11 @@
       <button @click="selectedType = 'registration'">Set registration</button>
     </p>
     <p>
-      <ui-dropdown
-        v-model="selectedType"
-        :options="agendaItemTypes"
-        title="Событие"
-        @on-item-selected="setSelectedType"
-      />
+      <ui-dropdown v-model="selectedType" :options="agendaItemTypes" title="Событие" />
     </p>
     <p>selectedLang = {{ selectedLang }}</p>
     <p>
-      <ui-dropdown v-model="selectedLang" :options="langOptions" title="Язык" @on-item-selected="setSelectedLang" />
+      <ui-dropdown v-model="selectedLang" :options="langOptions" title="Язык" />
     </p>
   </div>
 </template>
@@ -86,15 +81,6 @@ export default {
       selectedLang: 'EN',
       selectedType: undefined,
     };
-  },
-
-  methods: {
-    setSelectedType(value) {
-      this.selectedType = value;
-    },
-    setSelectedLang(value) {
-      this.selectedLang = value;
-    },
   },
 };
 </script>

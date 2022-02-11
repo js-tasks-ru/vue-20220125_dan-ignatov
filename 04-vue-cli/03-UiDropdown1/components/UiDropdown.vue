@@ -1,16 +1,21 @@
 <template>
-  <div class="dropdown" :class="cssClass">
-    <button type="button" class="dropdown__toggle" :class="cssClassButton" @click="toggleDropDown">
-      <ui-icon :icon="displayIcon" class="dropdown__icon" />
+  <div class="dropdown" :class="css__dropdown" >
+    <button type="button" class="dropdown__toggle" :class="css__dropdown__toggle" @click="toggleDropDown">
+      <ui-icon v-if="displayIcon" :icon="displayIcon" class="dropdown__icon" :class="css__dropdown__icon" />
       <span>{{ displayText }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
+    <div
+      class="dropdown__menu"
+      :class="css__dropdown__menu"
+      role="listbox"
+      :style="isDropDownOpened ? 'for-testes-only' : 'visibility: hidden'"
+    >
       <button
         v-for="optionItem in options"
         :key="optionItem.value"
         class="dropdown__item"
-        :class="cssClassDropDownItem"
+        :class="css__dropdown__item"
         role="option"
         type="button"
         @click="onItemClicked(optionItem.value)"
@@ -18,14 +23,6 @@
         <ui-icon v-if="optionItem.icon" :icon="optionItem.icon" class="dropdown__icon" />
         {{ optionItem.text }}
       </button>
-      <!-- <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
-      </button> -->
     </div>
   </div>
 </template>
@@ -44,6 +41,7 @@ export default {
       required: true,
     },
     // Default property name for 'v-model="selectedType"'
+    // https://v3.ru.vuejs.org/ru/guide/migration/v-model.html#%D1%81%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%81-%D0%B2-3-x
     modelValue: {
       type: String,
       // validator: see this.methods.validateProps
@@ -54,13 +52,7 @@ export default {
     },
   },
 
-  emits: { onItemSelected: null },
-
-  // data: function() {
-  //   return {
-  //     selectedValue,
-  //   };
-  // },
+  emits: { 'update:modelValue': null },
 
   data() {
     return {
@@ -70,17 +62,27 @@ export default {
   },
 
   computed: {
-    cssClass() {
+    css__dropdown() {
       return {
         dropdown_opened: this.isDropDownOpened,
       };
     },
-    cssClassButton() {
+    css__dropdown__menu() {
+      return {
+        dropdown__menu_invisible: !this.isDropDownOpened,
+      };
+    },
+    css__dropdown__toggle() {
       return {
         dropdown__toggle_icon: this.hasIconsInOptions,
       };
     },
-    cssClassDropDownItem() {
+    css__dropdown__icon() {
+      return {
+        dropdown__icon_nodisplay: !this.hasIconsInOptions,
+      };
+    },
+    css__dropdown__item() {
       return {
         dropdown__item_icon: this.hasIconsInOptions,
       };
@@ -90,7 +92,7 @@ export default {
       return displayText || this.modelValue || this.title;
     },
     displayIcon() {
-      return this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon;
+      return (this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon);
     },
   },
 
@@ -116,7 +118,7 @@ export default {
     },
     onItemClicked(value) {
       this.isDropDownOpened = false;
-      this.$emit('onItemSelected', value);
+      this.$emit('update:modelValue', value);
     },
   },
 };
@@ -193,6 +195,10 @@ export default {
   overflow: hidden;
 }
 
+.dropdown__menu_invisible {
+  visibility: hidden;
+}
+
 .dropdown_opened .dropdown__menu {
   display: flex;
   position: absolute;
@@ -236,5 +242,9 @@ export default {
   top: 50%;
   left: 16px;
   transform: translate(0, -50%);
+}
+
+.dropdown__icon_nodisplay {
+  display: none;
 }
 </style>

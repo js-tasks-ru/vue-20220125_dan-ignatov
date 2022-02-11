@@ -29,6 +29,8 @@ export default {
 
   data() {
     return {
+      // Map or Set can be a bit faster, but there will no be more than 100 items
+      // and I found only a list of Array wrapped methods: https://vuejs.org/guide/essentials/list.html#array-change-detection
       items: new Array(),
     };
   },
@@ -50,7 +52,7 @@ export default {
     _addItem(type, message) {
       const newItem = { type, message };
       newItem.timeoutId = setTimeout(
-        () => (this.items = this.items.filter((item) => item.key !== newItem.key)),
+        () => (this.items = this.items.filter((item) => item.key !== newItem.key)), // indexOf + splice
         this.closeToastTimeout,
       );
       newItem.key = newItem.timeoutId;

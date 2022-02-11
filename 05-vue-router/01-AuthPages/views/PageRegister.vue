@@ -31,7 +31,7 @@
           </label>
         </ui-form-group>
         <div class="form__buttons">
-          <button type="submit" class="button button_primary">Зарегистрироваться</button>
+          <button type="submit" class="button button_primary" @click="handleSubmit">Зарегистрироваться</button>
         </div>
         <div class="form__append">
           Уже есть аккаунт? <router-link :to="{ name: 'login' }" class="link">Войдите</router-link>
@@ -55,7 +55,8 @@ export default {
 
   methods: {
     handleSubmit() {
-      // Требуется обработать сабмит формы
+      // https://router.vuejs.org/guide/essentials/navigation.html#navigate-to-a-different-location
+      this.$router.push({ name: 'login' });
     },
   },
 };

@@ -40,8 +40,13 @@ export default {
     handleSubmit() {
       // Требуется обработать сабмит формы
       // https://router.vuejs.org/guide/essentials/navigation.html
+      // https://router.vuejs.org/guide/essentials/navigation.html#navigate-to-a-different-location
       // https://reactgo.com/vue-router-query-params/
-      this.$router.push({ name: this.$route.query.from ?? 'index' });
+
+      this.$router.push({ path: this.$route.query.from ?? '/' });
+
+      // https://router.vuejs.org/guide/essentials/navigation.html#navigate-to-a-different-location
+      // this.$router.push({ name: this.$route.query.from ?? 'index' });
     },
   },
 };

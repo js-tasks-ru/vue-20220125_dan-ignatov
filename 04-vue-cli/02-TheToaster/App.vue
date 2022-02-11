@@ -5,7 +5,7 @@
     <button @click="error">Add Error Message</button>
   </p>
 
-  <hr style="margin: 20px 0"/>
+  <hr style="margin: 20px 0" />
   TheToasterSingleComponent
 
   <the-toaster-single-component ref="toasterSingleComponent" toastsAlign="left" />
@@ -13,7 +13,6 @@
     <button @click="successSingleComponent">Add Success Message</button>
     <button @click="errorSingleComponent">Add Error Message</button>
   </p>
-
 </template>
 
 <script>

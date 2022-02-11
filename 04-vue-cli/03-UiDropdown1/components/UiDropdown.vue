@@ -18,7 +18,7 @@
         :class="css__dropdown__item"
         role="option"
         type="button"
-        @click="onItemClicked(optionItem.value)"
+        @click="setSelectedValue(optionItem.value)"
       >
         <ui-icon v-if="optionItem.icon" :icon="optionItem.icon" class="dropdown__icon" />
         {{ optionItem.text }}
@@ -29,13 +29,15 @@
     'v-show' sets "display:none", but such fields will be submitted.
     https://vuejs.org/guide/essentials/conditional.html#v-if-vs-v-show
    -->
-  <select v-show="false">
+  <select v-show="false" :value="modelValue" @change="setSelectedValue($event.target.value)">
     <option
       v-for="optionItem in options"
       :key="optionItem.value"
       :value="optionItem.value"
       :selected="modelValue === optionItem.value"
-    ></option>
+    >
+      {{ optionItem.text }}
+    </option>
   </select>
 </template>
 
@@ -128,7 +130,7 @@ export default {
         console.error(`${this.$.type.name}: The 'options' array doesn't contain the '${this.modelValue}' value`);
       }
     },
-    onItemClicked(value) {
+    setSelectedValue(value) {
       this.isDropDownOpened = false;
       this.$emit('update:modelValue', value);
     },

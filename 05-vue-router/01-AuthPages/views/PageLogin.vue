@@ -14,7 +14,7 @@
           </div>
         </ui-form-group>
         <div class="form__buttons">
-          <button type="submit" class="button button_primary button_block">Войти</button>
+          <button type="submit" class="button button_primary button_block" @click="handleSubmit">Войти</button>
         </div>
         <div class="form__append">
           Нет аккаунта? <router-link :to="{ name: 'register' }" class="link">Зарегистрируйтесь</router-link>
@@ -39,6 +39,9 @@ export default {
   methods: {
     handleSubmit() {
       // Требуется обработать сабмит формы
+      // https://router.vuejs.org/guide/essentials/navigation.html
+      // https://reactgo.com/vue-router-query-params/
+      this.$router.push({ name: this.$route.query.from ?? 'index' });
     },
   },
 };

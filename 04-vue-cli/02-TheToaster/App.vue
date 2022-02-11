@@ -1,5 +1,5 @@
 <template>
-  <the-toaster ref="toaster" close-toast-timeout="2000" toastsAlign="left" />
+  <the-toaster ref="toaster" close-toast-timeout="2000" toastsAlign="right" />
   <p>
     <button @click="success">Add Success Message</button>
     <button @click="error">Add Error Message</button>

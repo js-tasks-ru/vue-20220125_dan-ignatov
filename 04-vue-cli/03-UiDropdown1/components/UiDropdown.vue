@@ -1,5 +1,5 @@
 <template>
-  <div class="dropdown" :class="css__dropdown" >
+  <div class="dropdown" :class="css__dropdown">
     <button type="button" class="dropdown__toggle" :class="css__dropdown__toggle" @click="toggleDropDown">
       <ui-icon v-if="displayIcon" :icon="displayIcon" class="dropdown__icon" :class="css__dropdown__icon" />
       <span>{{ displayText }}</span>
@@ -92,7 +92,7 @@ export default {
       return displayText || this.modelValue || this.title;
     },
     displayIcon() {
-      return (this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon);
+      return this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon;
     },
   },
 

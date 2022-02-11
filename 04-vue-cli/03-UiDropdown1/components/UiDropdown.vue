@@ -25,6 +25,18 @@
       </button>
     </div>
   </div>
+  <!--
+    'v-show' sets "display:none", but such fields will be submitted.
+    https://vuejs.org/guide/essentials/conditional.html#v-if-vs-v-show
+   -->
+  <select v-show="false">
+    <option
+      v-for="optionItem in options"
+      :key="optionItem.value"
+      :value="optionItem.value"
+      :selected="modelValue === optionItem.value"
+    ></option>
+  </select>
 </template>
 
 <script>

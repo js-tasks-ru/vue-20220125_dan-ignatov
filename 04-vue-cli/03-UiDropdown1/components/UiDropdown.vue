@@ -9,7 +9,7 @@
       class="dropdown__menu"
       :class="css__dropdown__menu"
       role="listbox"
-      :style="isDropDownOpened ? 'for-testes-only' : 'visibility: hidden'"
+      :style="isDropDownOpened ? '' : 'visibility: hidden; for-testes-only;'"
     >
       <button
         v-for="optionItem in options"

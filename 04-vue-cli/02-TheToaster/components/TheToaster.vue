@@ -11,6 +11,13 @@
 <script>
 import Toast, { ToastTypes } from './Toast';
 
+function addToastItem(type, message) {
+  const newItem = { type, message };
+  newItem.timeoutId = setTimeout(() => this.items.splice(this.items.indexOf(newItem), 1), this.closeToastTimeout);
+  newItem.key = newItem.timeoutId;
+  this.items.push(newItem);
+}
+
 export default {
   name: 'TheToaster',
 
@@ -49,20 +56,11 @@ export default {
   },
 
   methods: {
-    _addItem(type, message) {
-      const newItem = { type, message };
-      newItem.timeoutId = setTimeout(
-        () => (this.items = this.items.filter((item) => item.key !== newItem.key)), // indexOf + splice
-        this.closeToastTimeout,
-      );
-      newItem.key = newItem.timeoutId;
-      this.items.push(newItem);
-    },
     success(message) {
-      this._addItem(ToastTypes.success.name, message);
+      addToastItem.call(this, ToastTypes.success.name, message);
     },
     error(message) {
-      this._addItem(ToastTypes.error.name, message);
+      addToastItem.call(this, ToastTypes.error.name, message);
     },
   },
 };

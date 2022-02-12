@@ -61,10 +61,7 @@ export default {
   methods: {
     _addItem(type, message) {
       const newItem = { type, message };
-      newItem.timeoutId = setTimeout(
-        () => (this.items = this.items.filter((item) => item.key !== newItem.key)),
-        this.closeToastTimeout,
-      );
+      newItem.timeoutId = setTimeout(() => this.items.splice(this.items.indexOf(newItem), 1), this.closeToastTimeout);
       newItem.key = newItem.timeoutId;
       this.items.push(newItem);
     },

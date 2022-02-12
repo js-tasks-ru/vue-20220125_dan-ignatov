@@ -1,13 +1,18 @@
 <template>
-  <div class="dropdown" :class="css__dropdown">
-    <button type="button" class="dropdown__toggle" :class="css__dropdown__toggle" @click="toggleDropDown">
-      <ui-icon v-if="displayIcon" :icon="displayIcon" class="dropdown__icon" :class="css__dropdown__icon" />
+  <div class="dropdown" :class="isDropDownOpened ? 'dropdown_opened' : ''">
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="hasIconsInOptions ? 'dropdown__toggle_icon' : ''"
+      @click="toggleDropDown"
+    >
+      <ui-icon v-if="displayIcon && hasIconsInOptions" :icon="displayIcon" class="dropdown__icon" />
       <span>{{ displayText }}</span>
     </button>
 
     <div
+      v-show="isDropDownOpened"
       class="dropdown__menu"
-      :class="css__dropdown__menu"
       role="listbox"
       :style="isDropDownOpened ? '' : 'visibility: hidden; for-testes-only;'"
     >
@@ -15,7 +20,7 @@
         v-for="optionItem in options"
         :key="optionItem.value"
         class="dropdown__item"
-        :class="css__dropdown__item"
+        :class="hasIconsInOptions ? 'dropdown__item_icon' : ''"
         role="option"
         type="button"
         @click="setSelectedValue(optionItem.value)"
@@ -76,31 +81,6 @@ export default {
   },
 
   computed: {
-    css__dropdown() {
-      return {
-        dropdown_opened: this.isDropDownOpened,
-      };
-    },
-    css__dropdown__menu() {
-      return {
-        dropdown__menu_invisible: !this.isDropDownOpened,
-      };
-    },
-    css__dropdown__toggle() {
-      return {
-        dropdown__toggle_icon: this.hasIconsInOptions,
-      };
-    },
-    css__dropdown__icon() {
-      return {
-        dropdown__icon_nodisplay: !this.hasIconsInOptions,
-      };
-    },
-    css__dropdown__item() {
-      return {
-        dropdown__item_icon: this.hasIconsInOptions,
-      };
-    },
     displayText() {
       const displayText = this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.text;
       return displayText || this.modelValue || this.title;
@@ -209,10 +189,6 @@ export default {
   overflow: hidden;
 }
 
-.dropdown__menu_invisible {
-  visibility: hidden;
-}
-
 .dropdown_opened .dropdown__menu {
   display: flex;
   position: absolute;
@@ -256,9 +232,5 @@ export default {
   top: 50%;
   left: 16px;
   transform: translate(0, -50%);
-}
-
-.dropdown__icon_nodisplay {
-  display: none;
 }
 </style>

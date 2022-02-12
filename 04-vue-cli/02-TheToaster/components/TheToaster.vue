@@ -2,19 +2,19 @@
   <div class="toasts" :class="cssClass">
     <template v-for="item in items" :key="item.key">
       <div class="ToasterItem">
-        <the-toast :type="item.type">{{ item.message }}</the-toast>
+        <toast :type="item.type">{{ item.message }}</toast>
       </div>
     </template>
   </div>
 </template>
 
 <script>
-import TheToast, { ToastTypes } from './TheToast';
+import Toast, { ToastTypes } from './Toast';
 
 export default {
   name: 'TheToaster',
 
-  components: { TheToast },
+  components: { Toast },
 
   props: {
     closeToastTimeout: {

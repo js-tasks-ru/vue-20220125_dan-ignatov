@@ -24,7 +24,7 @@ const ToastTypes = {
 export { ToastTypes };
 
 export default {
-  name: 'TheToast',
+  name: 'Toast',
 
   components: { UiIcon },
 

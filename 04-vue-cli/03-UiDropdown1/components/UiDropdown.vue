@@ -76,7 +76,6 @@ export default {
   data() {
     return {
       isDropDownOpened: false,
-      hasIconsInOptions: false,
     };
   },
 
@@ -88,6 +87,9 @@ export default {
     displayIcon() {
       return this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon;
     },
+    hasIconsInOptions() {
+      return this.options?.some((item) => item.icon);
+    },
   },
 
   watch: {
@@ -95,7 +97,6 @@ export default {
       immediate: true,
       handler() {
         this.validateProps();
-        this.hasIconsInOptions = this.options?.find((item) => item.icon);
       },
     },
   },

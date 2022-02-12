@@ -1,10 +1,6 @@
 <template>
   <div class="toasts" :class="cssClass">
-    <template v-for="item in items" :key="item.key">
-      <div class="ToasterItem">
-        <toast :type="item.type">{{ item.message }}</toast>
-      </div>
-    </template>
+    <toast v-for="item in items" :key="item.key" class="ToasterItem" :type="item.type">{{ item.message }}</toast>
   </div>
 </template>
 
@@ -100,6 +96,6 @@ export default {
 }
 
 .ToasterItem + .ToasterItem {
-  padding-top: 20px;
+  margin-top: 20px;
 }
 </style>

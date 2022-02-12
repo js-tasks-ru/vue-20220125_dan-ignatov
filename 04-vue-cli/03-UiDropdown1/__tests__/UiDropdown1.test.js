@@ -178,6 +178,5 @@ describe('vue-cli/UiDropdown1', () => {
       expect(wrapper.emitted('update:modelValue').length).toBe(1);
       expect(wrapper.emitted('update:modelValue')[0]).toEqual([OPTIONS[1].value]);
     });
-
   });
 });

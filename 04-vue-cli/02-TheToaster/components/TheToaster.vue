@@ -1,24 +1,64 @@
 <template>
-  <div class="toasts">
-    <div class="toast toast_success">
-      <ui-icon class="toast__icon" icon="check-circle" />
-      <span>Success Toast Example</span>
-    </div>
-
-    <div class="toast toast_error">
-      <ui-icon class="toast__icon" icon="alert-circle" />
-      <span>Error Toast Example</span>
-    </div>
+  <div class="toasts" :class="cssClass">
+    <toast v-for="item in items" :key="item.key" class="ToasterItem" :type="item.type">{{ item.message }}</toast>
   </div>
 </template>
 
 <script>
-import UiIcon from './UiIcon';
+import Toast, { ToastTypes } from './Toast';
+
+function addToastItem(type, message) {
+  const newItem = { type, message };
+  newItem.timeoutId = setTimeout(() => this.items.splice(this.items.indexOf(newItem), 1), this.closeToastTimeout);
+  newItem.key = newItem.timeoutId;
+  this.items.push(newItem);
+}
 
 export default {
   name: 'TheToaster',
 
-  components: { UiIcon },
+  components: { Toast },
+
+  props: {
+    closeToastTimeout: {
+      type: Number,
+      default: 5000,
+    },
+    toastsAlign: {
+      type: String,
+      default: 'right',
+    },
+  },
+
+  data() {
+    return {
+      // Map or Set can be a bit faster, but there will no be more than 100 items
+      // and I found only a list of Array wrapped methods: https://vuejs.org/guide/essentials/list.html#array-change-detection
+      items: new Array(),
+    };
+  },
+
+  computed: {
+    cssClass() {
+      return {
+        toast_alignRight: this.toastsAlign === 'right',
+        toast_alignLeft: this.toastsAlign !== 'right',
+      };
+    },
+  },
+
+  beforeUnmount() {
+    this.items?.foreach((item) => clearTimeout(item.timeoutId));
+  },
+
+  methods: {
+    success(message) {
+      addToastItem.call(this, ToastTypes.success.name, message);
+    },
+    error(message) {
+      addToastItem.call(this, ToastTypes.error.name, message);
+    },
+  },
 };
 </script>
 
@@ -26,7 +66,6 @@ export default {
 .toasts {
   position: fixed;
   bottom: 8px;
-  right: 8px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -34,40 +73,29 @@ export default {
   z-index: 999;
 }
 
+.toast_alignRight {
+  right: 8px;
+}
+
+.toast_alignLeft {
+  left: 8px;
+}
+
 @media all and (min-width: 992px) {
   .toasts {
     bottom: 72px;
+  }
+
+  .toast_alignRight {
     right: 112px;
+  }
+
+  .toast_alignLeft {
+    left: 112px;
   }
 }
 
-.toast {
-  display: flex;
-  flex: 0 0 auto;
-  flex-direction: row;
-  align-items: center;
-  padding: 16px;
-  background: #ffffff;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  font-size: 18px;
-  line-height: 28px;
-  width: auto;
-}
-
-.toast + .toast {
+.ToasterItem + .ToasterItem {
   margin-top: 20px;
-}
-
-.toast__icon {
-  margin-right: 12px;
-}
-
-.toast.toast_success {
-  color: var(--green);
-}
-
-.toast.toast_error {
-  color: var(--red);
 }
 </style>

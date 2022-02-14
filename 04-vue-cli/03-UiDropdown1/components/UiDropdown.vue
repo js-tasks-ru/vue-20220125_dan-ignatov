@@ -1,21 +1,49 @@
 <template>
-  <div class="dropdown dropdown_opened">
-    <button type="button" class="dropdown__toggle dropdown__toggle_icon">
-      <ui-icon icon="tv" class="dropdown__icon" />
-      <span>Title</span>
+  <div class="dropdown" :class="isDropDownOpened ? 'dropdown_opened' : ''">
+    <button
+      type="button"
+      class="dropdown__toggle"
+      :class="hasIconsInOptions ? 'dropdown__toggle_icon' : ''"
+      @click="toggleDropDown"
+    >
+      <ui-icon v-if="displayIcon && hasIconsInOptions" :icon="displayIcon" class="dropdown__icon" />
+      <span>{{ displayText }}</span>
     </button>
 
-    <div class="dropdown__menu" role="listbox">
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 1
-      </button>
-      <button class="dropdown__item dropdown__item_icon" role="option" type="button">
-        <ui-icon icon="tv" class="dropdown__icon" />
-        Option 2
+    <div
+      v-show="isDropDownOpened"
+      class="dropdown__menu"
+      role="listbox"
+      :style="isDropDownOpened ? '' : 'visibility: hidden; for-testes-only;'"
+    >
+      <button
+        v-for="optionItem in options"
+        :key="optionItem.value"
+        class="dropdown__item"
+        :class="hasIconsInOptions ? 'dropdown__item_icon' : ''"
+        role="option"
+        type="button"
+        @click="setSelectedValue(optionItem.value)"
+      >
+        <ui-icon v-if="optionItem.icon" :icon="optionItem.icon" class="dropdown__icon" />
+        {{ optionItem.text }}
       </button>
     </div>
   </div>
+  <!--
+    'v-show' sets "display:none", but such fields will be submitted.
+    https://vuejs.org/guide/essentials/conditional.html#v-if-vs-v-show
+   -->
+  <select v-show="false" :value="modelValue" @change="setSelectedValue($event.target.value)">
+    <option
+      v-for="optionItem in options"
+      :key="optionItem.value"
+      :value="optionItem.value"
+      :selected="modelValue === optionItem.value"
+    >
+      {{ optionItem.text }}
+    </option>
+  </select>
 </template>
 
 <script>
@@ -25,6 +53,69 @@ export default {
   name: 'UiDropdown',
 
   components: { UiIcon },
+
+  props: {
+    options: {
+      type: Array,
+      required: true,
+    },
+    // Default property name for 'v-model="selectedType"'
+    // https://v3.ru.vuejs.org/ru/guide/migration/v-model.html#%D1%81%D0%B8%D0%BD%D1%82%D0%B0%D0%BA%D1%81%D0%B8%D1%81-%D0%B2-3-x
+    modelValue: {
+      type: String,
+      // validator: see this.methods.validateProps
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+
+  emits: { 'update:modelValue': null },
+
+  data() {
+    return {
+      isDropDownOpened: false,
+    };
+  },
+
+  computed: {
+    displayText() {
+      const displayText = this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.text;
+      return displayText || this.modelValue || this.title;
+    },
+    displayIcon() {
+      return this.modelValue && this.options?.find((item) => item?.value === this.modelValue)?.icon;
+    },
+    hasIconsInOptions() {
+      return this.options?.some((item) => item.icon);
+    },
+  },
+
+  watch: {
+    $props: {
+      immediate: true,
+      handler() {
+        this.validateProps();
+      },
+    },
+  },
+
+  methods: {
+    toggleDropDown() {
+      this.isDropDownOpened = !this.isDropDownOpened;
+    },
+    validateProps() {
+      if (this.modelValue && this.options && !this.options.find((item) => item.value === this.modelValue)) {
+        // eslint-disable-next-line no-console
+        console.error(`${this.$.type.name}: The 'options' array doesn't contain the '${this.modelValue}' value`);
+      }
+    },
+    setSelectedValue(value) {
+      this.isDropDownOpened = false;
+      this.$emit('update:modelValue', value);
+    },
+  },
 };
 </script>
 

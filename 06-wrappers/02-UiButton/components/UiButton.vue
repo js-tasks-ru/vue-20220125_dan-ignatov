@@ -40,8 +40,8 @@ export default {
     //   };
     // },
     typeAttributeValue() {
-      // this.$attrs.type - значение может задаваться снаружи
-      // v-bind="$attrs" не нужен, <button> сразу рутовый и на него придут все атрибуты
+      // this.$attrs.type - значение может задаваться снаружи и перепишет мое значение, если задано, мне не нужно проверять его вручную
+      // v-bind="$attrs" не нужен, <button> сразу рутовый и все атрибуты придут на него
       return this.tag === 'button' ? 'button' : undefined;
     },
   },

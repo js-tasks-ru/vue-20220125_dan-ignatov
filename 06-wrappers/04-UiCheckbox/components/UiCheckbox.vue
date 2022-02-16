@@ -1,14 +1,40 @@
 <template>
   <label class="checkbox">
-    <input type="checkbox" class="checkbox__input" />
+    <input v-model="checkboxValue" v-bind="$attrs" type="checkbox" class="checkbox__input" />
     <span class="checkbox__box"></span>
-    Label Text
+    <slot></slot>
   </label>
 </template>
 
 <script>
 export default {
   name: 'UiCheckbox',
+
+  inheritAttrs: false,
+
+  props: {
+    modelValue: {
+      type: [Boolean, Array],
+      // default: new Array() - Array should be passed by external code if it should be an array, https://github.com/vuejs/vue/issues/5045
+    },
+  },
+
+  emits: ['update:modelValue'],
+
+  computed: {
+    //
+    // Checkbox in Vue: https://v2.vuejs.org/v2/guide/forms.html#Checkbox
+    // Don't use '_' in names: https://forum.vuejs.org/t/v-model-multiple-checkbox-and-computed-property/6544/3
+    //
+    checkboxValue: {
+      get() {
+        return this.modelValue;
+      },
+      set(newValue) {
+        this.$emit('update:modelValue', newValue);
+      },
+    },
+  },
 };
 </script>
 

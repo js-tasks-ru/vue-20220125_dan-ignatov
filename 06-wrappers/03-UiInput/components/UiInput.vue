@@ -29,7 +29,6 @@
 
 <script>
 export default {
-
   // TODO: Implement lazy
 
   name: 'UiInput',

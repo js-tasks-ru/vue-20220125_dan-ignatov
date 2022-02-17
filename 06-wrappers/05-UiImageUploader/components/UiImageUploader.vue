@@ -1,15 +1,160 @@
 <template>
   <div class="image-uploader">
-    <label class="image-uploader__preview image-uploader__preview-loading" style="--bg-url: url('/link.jpeg')">
-      <span class="image-uploader__text">Загрузить изображение</span>
-      <input type="file" accept="image/*" class="image-uploader__input" />
+    <label
+      class="image-uploader__preview"
+      :style="{ '--bg-url': bgUrl ? `url('${bgUrl}')` : null }"
+      :class="{ 'image-uploader__preview-loading': isLoading }"
+    >
+      <span class="image-uploader__text">{{ backgroundText }}</span>
+      <input
+        ref="fileInput"
+        type="file"
+        v-bind="$attrs"
+        accept="image/*"
+        class="image-uploader__input"
+        @change="handleInputChange"
+        @click="handleInputClick"
+      />
     </label>
   </div>
 </template>
 
 <script>
+//
+// 'File' component from vuetifyjs: https://vuetifyjs.com/en/components/file-inputs/
+// v-model doesn't support 'file': https://stackoverflow.com/questions/64607995/v-model-directives-dont-support-input-type-file
+// "c:\fakepath\" + URL.createObjectURL: https://html.spec.whatwg.org/multipage/input.html#fakepath-srsly
+// updateImageDisplay: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#examples
+//
+
+const REMOVE_IMAGE_TEXT = 'Удалить изображение';
+const LOAD_IMAGE_TEXT = 'Загрузить изображение';
+const LOADING_TEXT = 'Загрузка...';
+
+const strategies = {
+  getInitialProps: (uploader, preview) => {
+    return {
+      strategy: uploader ? strategies.hasUploader : strategies.noUploader,
+      isLoading: false,
+      bgUrl: preview,
+    };
+  },
+
+  noUploader: {
+    getBackgroundText: (vm) => (vm.bgUrl ? REMOVE_IMAGE_TEXT : LOAD_IMAGE_TEXT),
+    handleInputClick: function (vm, event) {
+      if (vm.bgUrl || vm.$refs.fileInput.value) {
+        event.preventDefault();
+        vm.bgUrl = null;
+        vm.$refs.fileInput.value = null;
+        vm.$emit('remove', { image: null });
+      }
+    },
+    handleInputChange: (vm, event) => {
+      if (vm.$refs.fileInput.files.length !== 0) {
+        vm.bgUrl = URL.createObjectURL(vm.$refs.fileInput.files[0]);
+        vm.$emit('select', vm.$refs.fileInput.files[0]);
+      }
+    },
+  },
+
+  hasUploader: {
+    getBackgroundText: (vm) => {
+      if (vm.isLoading) {
+        return LOADING_TEXT;
+      }
+      if (vm.bgUrl) {
+        return REMOVE_IMAGE_TEXT;
+      }
+      return LOAD_IMAGE_TEXT;
+    },
+    handleInputClick: function (vm, event) {
+      if (vm.isLoading) {
+        event.preventDefault();
+        return;
+      }
+      if (vm.preview || vm.$refs.fileInput.value) {
+        event.preventDefault();
+        vm.bgUrl = null;
+        vm.$refs.fileInput.value = null;
+        const isLoading = vm.isLoading;
+        vm.isLoading = false;
+        if (!isLoading) {
+          // rise event after all internal operations are finished
+          vm.$emit('remove', { image: null });
+        }
+      }
+    },
+    handleInputChange: (vm, event) => {
+      vm.uploader(vm.$refs.fileInput.files[0]).then(
+        (successResult) => {
+          vm.isLoading = false;
+          vm.bgUrl = successResult.image;
+          vm.$emit('upload', successResult);
+        },
+        (errorResult) => {
+          vm.isLoading = false;
+          vm.$refs.fileInput.value = null;
+          vm.$emit('error', errorResult);
+        },
+      );
+      vm.isLoading = true;
+    },
+  },
+};
+
 export default {
   name: 'UiImageUploader',
+
+  inheritAttrs: false,
+
+  props: {
+    preview: String, // ссылка на отображаемое изображение;
+    uploader: Function, // асинхронная функция загрузки изображения.
+  },
+
+  emits: [
+    'select', // В любом случае после выбора файла порождается событие select с выбранным файлом.
+    'upload', // После успешного окончания загрузки порождается событие upload с результатом работы загрузчика.
+    'error', // При неуспешной загрузке изображения порождается событие error с ошибкой загрузчика, а компонент возвращается в предыдущее состояние.
+    'remove', // При наличии выбранного изображения по клику удаляется изображение и порождается событие remove.
+  ],
+
+  data() {
+    return strategies.getInitialProps(this.uploader, this.preview);
+  },
+
+  computed: {
+    backgroundText() {
+      return this.strategy.getBackgroundText(this);
+    },
+  },
+
+  watch: {
+    // preview: function(newVal, oldVal) {
+    //   Object.assign(this.$data, strategies.getInitialProps(this.hasUploader, newVal));
+    // },
+    // uploader: function(newVal, oldVal) {
+    //   Object.assign(this.$data, strategies.getInitialProps(newVal, this.preview));
+    // },
+  },
+
+  methods: {
+    handleInputChange(e) {
+      //
+      // v-model doesn't support 'file': https://stackoverflow.com/questions/64607995/v-model-directives-dont-support-input-type-file
+      // "c:\fakepath\" + URL.createObjectURL: https://html.spec.whatwg.org/multipage/input.html#fakepath-srsly
+      // updateImageDisplay: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#examples
+      // https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file
+      //
+
+      this.strategy.handleInputChange(this, e);
+    },
+
+    handleInputClick(e) {
+      this.strategy.handleInputClick(this, e);
+    },
+  },
 };
 </script>
 

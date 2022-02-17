@@ -3,23 +3,16 @@
     <label
       class="image-uploader__preview image-uploader__preview-loading"
       :style="{ '--bg-url': preview ? `url('${preview}')` : null }"
+      @click="handleClick"
     >
       <span class="image-uploader__text">{{ backgroundText }}</span>
-      <input
-        ref="fileInput"
-        type="file"
-        v-bind="$attrs"
-        accept="image/*"
-        class="image-uploader__input"
-        @change="handleInputChange"
-        @click="handleInputClick"
-      />
+      <input type="file" v-bind="$attrs" accept="image/*" class="image-uploader__input" @change="handleChange" />
     </label>
   </div>
 </template>
 
 <script>
-// 'File' component from vuetifyjs: https://vuetifyjs.com/en/components/file-inputs/
+// Some library component: https://vuetifyjs.com/en/components/file-inputs/
 
 const backgroundTexts = {
   noImage: 'Загрузить изображение',
@@ -47,6 +40,8 @@ export default {
   data() {
     return {
       isLoading: false,
+      //imageUrl: '/link.jpeg',
+      //imageUrl: 'https://course-vue.javascript.ru/api/images/1',
     };
   },
 
@@ -62,7 +57,16 @@ export default {
   },
 
   methods: {
-    handleInputChange(e) {
+    handleClick() {
+      this.imageUrl = null;
+      this.imageUrl1 = null;
+    },
+    // handleCLick() {
+    //   Handle the 'select the same file' scenario:
+    //   https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file
+    // }
+
+    handleChange(e) {
       //
       // v-model doesn't support 'file': https://stackoverflow.com/questions/64607995/v-model-directives-dont-support-input-type-file
       // "c:\fakepath\" + URL.createObjectURL: https://html.spec.whatwg.org/multipage/input.html#fakepath-srsly
@@ -72,28 +76,14 @@ export default {
       if (!files.length) {
         return;
       }
-      if (files.length > 1) {
-        throw Error('"files.length > 1" is not supported');
-      }
 
-      const newImageUrl = URL.createObjectURL(files[0]);
+      const imageUrl = URL.createObjectURL(files[0]);
 
       // Notify parent that there is a new value to receive it through 'preview' and show
-      // Otherwise, provide a reaction to new 'preview' value if it was changed in parent
-      this.$emit('upload', { image: newImageUrl });
+      // Otherwise, there will be no reaction to new 'preview' value if it was changed in parent
+      this.$emit('upload', { image: imageUrl });
 
-      this.$emit('select', newImageUrl);
-    },
-
-    handleInputClick(event) {
-      if (this.preview) {
-        //   https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file
-
-        this.$refs.fileInput.value = null;
-        event.preventDefault();
-        this.$emit('upload', { image: null });
-        this.$emit('select', null);
-      }
+      this.$emit('select', imageUrl);
     },
   },
 };

@@ -1,9 +1,8 @@
 <template>
   <div class="image-uploader">
     <label
-      class="image-uploader__preview"
+      class="image-uploader__preview image-uploader__preview-loading"
       :style="{ '--bg-url': preview ? `url('${preview}')` : null }"
-      :class="{ 'image-uploader__preview-loading': isLoading }"
     >
       <span class="image-uploader__text">{{ backgroundText }}</span>
       <input
@@ -81,37 +80,19 @@ export default {
 
       // Notify parent that there is a new value to receive it through 'preview' and show
       // Otherwise, provide a reaction to new 'preview' value if it was changed in parent
-      // this.$emit('upload', { image: newImageUrl });
-      if (this.uploader) {
-        this.isLoading = true;
-        this.uploader(files[0]).then(
-          (successResult) => {
-            this.isLoading = false;
-            this.$emit('upload', { image: successResult.image });
-          },
-          (errorResult) => {
-            this.isLoading = false;
-            //console.log(errorResult);
-            this.$emit('error', errorResult);
-            this.$emit('select', { image: null });
-          },
-        );
-      }
+      this.$emit('upload', { image: newImageUrl });
 
-      this.$emit('select', { image: newImageUrl });
+      this.$emit('select', newImageUrl);
     },
 
     handleInputClick(event) {
-      if (this.isLoading) {
-        event.preventDefault();
-      } else if (this.preview) {
+      if (this.preview) {
         //   https://stackoverflow.com/questions/12030686/html-input-file-selection-event-not-firing-upon-selecting-the-same-file
 
         this.$refs.fileInput.value = null;
         event.preventDefault();
-
         this.$emit('upload', { image: null });
-        this.$emit('select', { image: null });
+        this.$emit('select', null);
       }
     },
   },

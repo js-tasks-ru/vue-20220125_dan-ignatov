@@ -1,23 +1,10 @@
 <template>
-  <h1>With uploader:</h1>
   <div id="app" class="sample container">
     <ui-image-uploader
       :preview="image"
       :uploader="uploadImage"
       @remove="image = undefined"
       @upload="image = $event.image"
-      @error="alert($event.message)"
-    />
-  </div>
-
-  <hr style="margin-top: 10px" />
-  <h1>Without uploader:</h1>
-  <div id="app" class="sample container">
-    <ui-image-uploader
-      :preview="image"
-      :uploader="uploadImage"
-      @remove="image = undefined"
-      @select="image = $event.image"
     />
   </div>
 </template>

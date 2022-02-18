@@ -1,10 +1,50 @@
 <template>
-  <button class="button button_secondary button_block">BUTTON</button>
+  <component :is="tag" class="button" :class="[buttonCssClass, { button_block: block }]" :type="typeAttributeValue">
+    <slot></slot>
+  </component>
 </template>
 
 <script>
+const ButtonTypes = {
+  primary: 'button_primary',
+  secondary: 'button_secondary',
+  danger: 'button_danger',
+};
+
 export default {
   name: 'UiButton',
+
+  props: {
+    tag: {
+      type: [String, Object],
+      default: 'button',
+    },
+    variant: {
+      type: String,
+      default: 'secondary',
+      validator: (name) => Object.keys(ButtonTypes).includes(name),
+    },
+    block: {
+      type: Boolean,
+    },
+  },
+
+  computed: {
+    buttonCssClass() {
+      return ButtonTypes[this.variant];
+    },
+    // cssClass() { - формировать классы в темплейте будет более читабельно
+    //   return {
+    //     [ButtonTypes[this.variant]]: true,
+    //     button_block: this.block,
+    //   };
+    // },
+    typeAttributeValue() {
+      // this.$attrs.type - значение может задаваться снаружи и перепишет мое значение, если задано, мне не нужно проверять его вручную
+      // v-bind="$attrs" не нужен, <button> сразу рутовый и все атрибуты придут на него
+      return this.tag === 'button' ? 'button' : undefined;
+    },
+  },
 };
 </script>
 

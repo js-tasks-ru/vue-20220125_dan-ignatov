@@ -41,22 +41,22 @@ export default {
           return;
         }
         const localDate = new Date(this.modelValue);
-        const dateInISOStringFormat = localDate.toISOString();
+        const utcDateInISOStringFormat = localDate.toISOString();
         // const localDateInISOStringFormat = new Date(
         //   localDate.getTime() - localDate.getTimezoneOffset() * 60 * 1000,
         // ).toISOString();
 
         if (this.type === 'date') {
           // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/date
-          return dateInISOStringFormat.slice(0, 10);
+          return utcDateInISOStringFormat.slice(0, 10);
         }
         if (this.type === 'time') {
           // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/time
-          return dateInISOStringFormat.slice(11, 16);
+          return utcDateInISOStringFormat.slice(11, 16);
         }
         if (this.type === 'datetime-local') {
           // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
-          return dateInISOStringFormat.slice(0, 23);
+          return utcDateInISOStringFormat.slice(0, 23);
         }
         return null;
       },

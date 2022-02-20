@@ -21,9 +21,9 @@
           -->
           <ui-image-uploader
             name="image"
-            :preview="meetup.image"
-            @select="meetup.imageToUpload = $event"
-            @remove="meetup.imageToUpload = null"
+            :preview="internalMeetup.image"
+            @select="internalMeetup.imageToUpload = $event"
+            @remove="internalMeetup.imageToUpload = null"
           />
         </ui-form-group>
       </fieldset>

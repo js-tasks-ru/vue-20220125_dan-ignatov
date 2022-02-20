@@ -74,22 +74,22 @@ watch(
   ( newValue, oldValue ) => {
     const oldStartsAtHours = Number(oldValue.split(':')[0]);
     const oldStartsAtMinutes = Number(oldValue.split(':')[1]);
+    const oldStartsAtDate = new Date(0, 0, 0, oldStartsAtHours, oldStartsAtMinutes);
     
     const endsAtHours = Number(internalAgendaItem.value.endsAt.split(':')[0]);
     const endsAtMinutes = Number(internalAgendaItem.value.endsAt.split(':')[1]);
+    const endsAtDate = new Date(0, 0, 0, endsAtHours, endsAtMinutes);
     
-    const durationHours = endsAtHours - oldStartsAtHours;
-    const durationMinutes = endsAtMinutes - oldStartsAtMinutes;
+    const durationMS = endsAtDate.getTime() - oldStartsAtDate.getTime();
     
     const newStartsAtHours = Number(newValue.split(':')[0]);
     const newStartsAtMinutes = Number(newValue.split(':')[1]);
 
-    const newEndsAtHours = (newStartsAtHours + durationHours).toString().padStart(2, '0');
-    const newEndsAtMinutes = (newStartsAtMinutes + durationMinutes).toString().padStart(2, '0');
+    const newEndsAtDate = new Date(0, 0, 0, newStartsAtHours, newStartsAtMinutes + durationMS / (60 * 1000));
+    const newEndsAtHoursString = newEndsAtDate.getHours().toString().padStart(2, '0');
+    const newEndsAtMinutesString = newEndsAtDate.getMinutes().toString().padStart(2, '0');
 
-    internalAgendaItem.value.endsAt = `${newEndsAtHours}:${newEndsAtMinutes}`; // single day duration only
-
-    console.log(durationHours);
+    internalAgendaItem.value.endsAt = `${newEndsAtHoursString}:${newEndsAtMinutesString}`;
   },
 );
 </script>

@@ -5,36 +5,78 @@
     </button>
 
     <ui-form-group>
-      <ui-dropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <ui-dropdown v-model="internalAgendaItem.type" title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
     </ui-form-group>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input type="time" placeholder="00:00" name="startsAt" />
+          <ui-input v-model="internalAgendaItem.startsAt" type="time" placeholder="00:00" name="startsAt" />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
         <ui-form-group label="Окончание">
-          <ui-input type="time" placeholder="00:00" name="endsAt" />
+          <ui-input v-model="internalAgendaItem.endsAt" type="time" placeholder="00:00" name="endsAt" />
         </ui-form-group>
       </div>
     </div>
 
     <ui-form-group label="Тема">
-      <ui-input name="title" />
+      <ui-input v-model="internalAgendaItem.title" name="title" />
     </ui-form-group>
     <ui-form-group label="Докладчик">
-      <ui-input name="speaker" />
+      <ui-input v-model="internalAgendaItem.speaker" name="speaker" />
     </ui-form-group>
     <ui-form-group label="Описание">
-      <ui-input multiline name="description" />
+      <ui-input v-model="internalAgendaItem.description" multiline name="description" />
     </ui-form-group>
     <ui-form-group label="Язык">
-      <ui-dropdown title="Язык" :options="$options.talkLanguageOptions" name="language" />
+      <ui-dropdown v-model="internalAgendaItem.language" title="Язык" :options="$options.talkLanguageOptions" name="language" />
     </ui-form-group>
   </fieldset>
 </template>
+
+<script setup>
+//
+// https://vuejs.org/api/sfc-script-setup.html
+// https://github.com/vuejs/rfcs/issues/55
+// https://vuejs.org/guide/extras/composition-api-faq.html#better-logic-reuse
+// https://vuejs.org/api/sfc-script-setup.html#using-components
+// https://vuejs.org/api/reactivity-core.html
+// https://vuejs.org/api/composition-api-setup.html
+// https://vuejs.org/api/#composition-api
+//
+
+// TODO:
+// const agendaItemAPI = {
+//   type, startsAt, endsAt, title, description, speaker, language,
+// };
+
+// import { watch, ref, defineProps, defineEmits } from 'vue';
+
+// const props = defineProps({
+//   agendaItem: {
+//     type: Object,
+//     required: true,
+//   },
+// })
+
+// const type = ref(props.agendaItem.type);
+// const startsAt = ref(props.agendaItem.startsAt);
+// const endsAt = ref(props.agendaItem.endsAt);
+// const title = ref(props.agendaItem.title);
+// const description = ref(props.agendaItem.description);
+// const speaker = ref(props.agendaItem.speaker);
+// const language = ref(props.agendaItem.language);
+
+// const emit = defineEmits(['update:agendaItem']);
+
+// watch([type, startsAt, endsAt, title, description, speaker, language], (newValuesArray) => {
+//   emit('update:agendaItem', { type: newValuesArray[0] });
+//   //{type, startsAt, endsAt, title, description, speaker, language
+//   //newValuesArray
+// });
+</script>
 
 <script>
 import UiIcon from './UiIcon';
@@ -88,6 +130,21 @@ export default {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+
+  data() {
+    return {
+      internalAgendaItem: { ...this.agendaItem },
+    };
+  },
+
+  watch: {
+    internalAgendaItem: {
+      deep: true,
+      handler() {
+        this.$emit('update:agendaItem', { ...this.internalAgendaItem });
+      },
     },
   },
 };

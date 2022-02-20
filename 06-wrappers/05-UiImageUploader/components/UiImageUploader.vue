@@ -26,6 +26,8 @@
 // "c:\fakepath\" + URL.createObjectURL: https://html.spec.whatwg.org/multipage/input.html#fakepath-srsly
 // updateImageDisplay: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#examples
 //
+// See also: 07-forms\02-MeetupForm\components\UiImageUploader.vue
+//
 
 const REMOVE_IMAGE_TEXT = 'Удалить изображение';
 const LOAD_IMAGE_TEXT = 'Загрузить изображение';

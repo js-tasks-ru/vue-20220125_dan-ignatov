@@ -29,7 +29,19 @@
 
 <script>
 export default {
+  //
   // TODO: Implement lazy
+  //
+  // See also: 07-forms\02-MeetupForm\components\UiInput.vue
+  //
+  // Lazy implementation:
+  // @[updateEvent]="$emit('update:modelValue', $event.target.value)"
+  // +
+  // computed: {
+  //   updateEvent() {
+  //     return this.modelModifiers.lazy ? 'change' : 'input';
+  //   },
+  // },
 
   name: 'UiInput',
 

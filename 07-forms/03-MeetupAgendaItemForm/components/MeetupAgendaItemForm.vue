@@ -1,6 +1,6 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click.prevent="emit('remove')">
       <ui-icon icon="trash" />
     </button>
 

@@ -52,14 +52,23 @@
 //   type, startsAt, endsAt, title, description, speaker, language,
 // };
 
-// import { watch, ref, defineProps, defineEmits } from 'vue';
+import { watch, ref, defineProps, defineEmits } from 'vue';
 
-// const props = defineProps({
-//   agendaItem: {
-//     type: Object,
-//     required: true,
-//   },
-// })
+const props = defineProps({
+  agendaItem: {
+    type: Object,
+    required: true,
+  },
+});
+
+const internalAgendaItem = ref({ ...props.agendaItem });
+const emit = defineEmits(['update:agendaItem']);
+
+watch(
+  internalAgendaItem,
+  () => emit('update:agendaItem', { ...internalAgendaItem.value }),
+  { deep: true, }
+);
 
 // const type = ref(props.agendaItem.type);
 // const startsAt = ref(props.agendaItem.startsAt);
@@ -126,27 +135,27 @@ export default {
 
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
 
-  props: {
-    agendaItem: {
-      type: Object,
-      required: true,
-    },
-  },
+  // props: {
+  //   agendaItem: {
+  //     type: Object,
+  //     required: true,
+  //   },
+  // },
 
-  data() {
-    return {
-      internalAgendaItem: { ...this.agendaItem },
-    };
-  },
+  // data() {
+  //   return {
+  //     internalAgendaItem: { ...this.agendaItem },
+  //   };
+  // },
 
-  watch: {
-    internalAgendaItem: {
-      deep: true,
-      handler() {
-        this.$emit('update:agendaItem', { ...this.internalAgendaItem });
-      },
-    },
-  },
+  // watch: {
+  //   internalAgendaItem: {
+  //     deep: true,
+  //     handler() {
+  //       this.$emit('update:agendaItem', { ...this.internalAgendaItem });
+  //     },
+  //   },
+  // },
 };
 </script>
 

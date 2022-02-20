@@ -38,8 +38,8 @@
 
 <script setup>
 //
-// https://vuejs.org/api/sfc-script-setup.html
 // https://github.com/vuejs/rfcs/issues/55
+// https://vuejs.org/api/sfc-script-setup.html
 // https://vuejs.org/guide/extras/composition-api-faq.html#better-logic-reuse
 // https://vuejs.org/api/sfc-script-setup.html#using-components
 // https://vuejs.org/api/reactivity-core.html
@@ -47,12 +47,7 @@
 // https://vuejs.org/api/#composition-api
 //
 
-// TODO:
-// const agendaItemAPI = {
-//   type, startsAt, endsAt, title, description, speaker, language,
-// };
-
-import { watch, ref, defineProps, defineEmits } from 'vue';
+import { watch, ref, defineProps, defineEmits, computed } from 'vue';
 
 const props = defineProps({
   agendaItem: {
@@ -62,29 +57,41 @@ const props = defineProps({
 });
 
 const internalAgendaItem = ref({ ...props.agendaItem });
-const emit = defineEmits(['update:agendaItem']);
+const emit = defineEmits(['update:agendaItem', 'remove']);
 
 watch(
+  // https://vuejs.org/api/reactivity-core.html#watch
+  // https://www.thisdot.co/blog/vue-3-composition-api-watch-and-watcheffect
+  // https://mokkapps.de/blog/why-i-love-vue-3-s-composition-api/
   internalAgendaItem,
-  () => emit('update:agendaItem', { ...internalAgendaItem.value }),
+  ( newValue ) => emit('update:agendaItem', { ...newValue }),
   { deep: true, }
 );
 
-// const type = ref(props.agendaItem.type);
-// const startsAt = ref(props.agendaItem.startsAt);
-// const endsAt = ref(props.agendaItem.endsAt);
-// const title = ref(props.agendaItem.title);
-// const description = ref(props.agendaItem.description);
-// const speaker = ref(props.agendaItem.speaker);
-// const language = ref(props.agendaItem.language);
+const startsAt = computed(() => internalAgendaItem.value.startsAt);
+watch(
+  startsAt,
+  ( newValue, oldValue ) => {
+    const oldStartsAtHours = Number(oldValue.split(':')[0]);
+    const oldStartsAtMinutes = Number(oldValue.split(':')[1]);
+    
+    const endsAtHours = Number(internalAgendaItem.value.endsAt.split(':')[0]);
+    const endsAtMinutes = Number(internalAgendaItem.value.endsAt.split(':')[1]);
+    
+    const durationHours = endsAtHours - oldStartsAtHours;
+    const durationMinutes = endsAtMinutes - oldStartsAtMinutes;
+    
+    const newStartsAtHours = Number(newValue.split(':')[0]);
+    const newStartsAtMinutes = Number(newValue.split(':')[1]);
 
-// const emit = defineEmits(['update:agendaItem']);
+    const newEndsAtHours = (newStartsAtHours + durationHours).toString().padStart(2, '0');
+    const newEndsAtMinutes = (newStartsAtMinutes + durationMinutes).toString().padStart(2, '0');
 
-// watch([type, startsAt, endsAt, title, description, speaker, language], (newValuesArray) => {
-//   emit('update:agendaItem', { type: newValuesArray[0] });
-//   //{type, startsAt, endsAt, title, description, speaker, language
-//   //newValuesArray
-// });
+    internalAgendaItem.value.endsAt = `${newEndsAtHours}:${newEndsAtMinutes}`; // single day duration only
+
+    console.log(durationHours);
+  },
+);
 </script>
 
 <script>
@@ -93,69 +100,66 @@ import UiFormGroup from './UiFormGroup';
 import UiInput from './UiInput';
 import UiDropdown from './UiDropdown';
 
-const agendaItemTypeIcons = {
-  registration: 'key',
-  opening: 'cal-sm',
-  talk: 'tv',
-  break: 'clock',
-  coffee: 'coffee',
-  closing: 'key',
-  afterparty: 'cal-sm',
-  other: 'cal-sm',
-};
+function getData() {
+    // ● Test suite failed to run
 
-const agendaItemDefaultTitles = {
-  registration: 'Регистрация',
-  opening: 'Открытие',
-  break: 'Перерыв',
-  coffee: 'Coffee Break',
-  closing: 'Закрытие',
-  afterparty: 'Afterparty',
-  talk: 'Доклад',
-  other: 'Другое',
-};
+    // C:\Work\GitHub\vue-20220125_dan-ignatov\07-forms\03-MeetupAgendaItemForm\components\MeetupAgendaItemForm.vue:84       
+    // const agendaItemTypeIcons = {
+    //       ^
 
-const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type, title]) => ({
-  value: type,
-  text: title,
-  icon: agendaItemTypeIcons[type],
-}));
+    // SyntaxError: Identifier 'agendaItemTypeIcons' has already been declared
+    //   1 | import { mount } from '@vue/test-utils';
+    // > 2 | const MeetupAgendaItemForm = require(global.getSolutionPath('components/MeetupAgendaItemForm')).default;        
+    //     |                              ^
+    //   3 |
 
-const talkLanguageOptions = [
-  { value: null, text: 'Не указано' },
-  { value: 'RU', text: 'RU' },
-  { value: 'EN', text: 'EN' },
-];
+  const agendaItemTypeIcons = {
+    registration: 'key',
+    opening: 'cal-sm',
+    talk: 'tv',
+    break: 'clock',
+    coffee: 'coffee',
+    closing: 'key',
+    afterparty: 'cal-sm',
+    other: 'cal-sm',
+  };
+
+  const agendaItemDefaultTitles = {
+    registration: 'Регистрация',
+    opening: 'Открытие',
+    break: 'Перерыв',
+    coffee: 'Coffee Break',
+    closing: 'Закрытие',
+    afterparty: 'Afterparty',
+    talk: 'Доклад',
+    other: 'Другое',
+  };
+
+  const agendaItemTypeOptions = Object.entries(agendaItemDefaultTitles).map(([type, title]) => ({
+    value: type,
+    text: title,
+    icon: agendaItemTypeIcons[type],
+  }));
+
+  const talkLanguageOptions = [
+    { value: null, text: 'Не указано' },
+    { value: 'RU', text: 'RU' },
+    { value: 'EN', text: 'EN' },
+  ];
+
+  return {
+    agendaItemTypeOptions,
+    talkLanguageOptions,
+  };
+}
 
 export default {
   name: 'MeetupAgendaItemForm',
 
-  agendaItemTypeOptions,
-  talkLanguageOptions,
+  agendaItemTypeOptions: getData().agendaItemTypeOptions,
+  talkLanguageOptions: getData().talkLanguageOptions,
 
   components: { UiIcon, UiFormGroup, UiInput, UiDropdown },
-
-  // props: {
-  //   agendaItem: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
-
-  // data() {
-  //   return {
-  //     internalAgendaItem: { ...this.agendaItem },
-  //   };
-  // },
-
-  // watch: {
-  //   internalAgendaItem: {
-  //     deep: true,
-  //     handler() {
-  //       this.$emit('update:agendaItem', { ...this.internalAgendaItem });
-  //     },
-  //   },
-  // },
 };
 </script>
 

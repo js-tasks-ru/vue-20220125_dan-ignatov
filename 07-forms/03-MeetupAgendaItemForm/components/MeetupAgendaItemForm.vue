@@ -21,16 +21,16 @@
       </div>
     </div>
 
-    <ui-form-group label="Тема">
+    <ui-form-group :label="currentFieldsSettings['title']?.caption">
       <ui-input v-model="internalAgendaItem.title" name="title" />
     </ui-form-group>
-    <ui-form-group label="Докладчик">
+    <ui-form-group :label="currentFieldsSettings['speaker']?.caption" v-if="!!currentFieldsSettings['speaker']">
       <ui-input v-model="internalAgendaItem.speaker" name="speaker" />
     </ui-form-group>
-    <ui-form-group label="Описание">
+    <ui-form-group :label="currentFieldsSettings['description']?.caption" v-if="!!currentFieldsSettings['description']">
       <ui-input v-model="internalAgendaItem.description" multiline name="description" />
     </ui-form-group>
-    <ui-form-group label="Язык">
+    <ui-form-group :label="currentFieldsSettings['language']?.caption" v-if="!!currentFieldsSettings['language']">
       <ui-dropdown v-model="internalAgendaItem.language" title="Язык" :options="$options.talkLanguageOptions" name="language" />
     </ui-form-group>
   </fieldset>
@@ -92,6 +92,27 @@ watch(
     internalAgendaItem.value.endsAt = `${newEndsAtHoursString}:${newEndsAtMinutesString}`;
   },
 );
+
+const fieldsSettings = {
+  talk: {
+    title: { caption: 'Тема' },
+    speaker: { caption: 'Докладчик' },
+    description: { caption: 'Описание' },
+    language:  { caption: 'Язык' }
+  },
+  other: {
+    title: { caption: 'Заголовок' },
+    description: { caption: 'Описание' },
+  },
+  default: {
+    title: { caption: 'Нестандартный текст (необязательно)' },
+  },
+};
+
+const currentFieldsSettings = computed(() => {
+  return fieldsSettings[internalAgendaItem.value.type] || fieldsSettings.default;
+});
+
 </script>
 
 <script>
@@ -101,6 +122,8 @@ import UiInput from './UiInput';
 import UiDropdown from './UiDropdown';
 
 function getData() {
+    // Move to function to avoid error in tests:
+    //
     // ● Test suite failed to run
 
     // C:\Work\GitHub\vue-20220125_dan-ignatov\07-forms\03-MeetupAgendaItemForm\components\MeetupAgendaItemForm.vue:84       

@@ -73,12 +73,14 @@
 <script>
 import { cloneDeep } from 'lodash-es';
 
-import MeetupAgendaItemForm from './MeetupAgendaItemForm';
-import UiButton from './UiButton';
-import UiFormGroup from './UiFormGroup';
-import UiImageUploader from './UiImageUploader';
-import UiInput from './UiInput';
-import UiInputDate from './UiInputDate';
+import MeetupAgendaItemForm from './MeetupAgendaItemForm.vue';
+
+import UiButton from '../../../06-wrappers/02-UiButton/components/UiButton.vue';
+import UiFormGroup from '../../../04-vue-cli/01-UiFormGroup1/components/UiFormGroup.vue';
+import UiImageUploader from '../../../06-wrappers/05-UiImageUploader/components/UiImageUploader.vue';
+import UiInput from '../../../06-wrappers/03-UiInput/components/UiInput.vue';
+import UiInputDate from '../../../06-wrappers/06-UiInputDate/components/UiInputDate.vue';
+
 import { createAgendaItem } from '../meetupService';
 
 export default {

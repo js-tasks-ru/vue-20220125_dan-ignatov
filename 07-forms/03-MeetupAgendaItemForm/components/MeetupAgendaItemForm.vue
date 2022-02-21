@@ -85,7 +85,7 @@ watch(
     const newStartsAtHours = Number(newValue.split(':')[0]);
     const newStartsAtMinutes = Number(newValue.split(':')[1]);
 
-    const newEndsAtDate = new Date(0, 0, 0, newStartsAtHours, newStartsAtMinutes + durationMS / (60 * 1000));
+    const newEndsAtDate = new Date(0, 0, 0, newStartsAtHours, newStartsAtMinutes, 0, durationMS);
     const newEndsAtHoursString = newEndsAtDate.getHours().toString().padStart(2, '0');
     const newEndsAtMinutesString = newEndsAtDate.getMinutes().toString().padStart(2, '0');
 

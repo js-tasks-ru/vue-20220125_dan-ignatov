@@ -5,6 +5,10 @@
 </template>
 
 <script>
+//
+// See also: 07-forms\02-MeetupForm\components\UiButton.vue
+//
+
 const ButtonTypes = {
   primary: 'button_primary',
   secondary: 'button_secondary',

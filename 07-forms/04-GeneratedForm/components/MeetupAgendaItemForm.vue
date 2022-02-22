@@ -1,31 +1,34 @@
 <template>
   <fieldset class="agenda-item-form">
-    <button type="button" class="agenda-item-form__remove-button">
+    <button type="button" class="agenda-item-form__remove-button" @click.prevent="$emit('remove')">
       <ui-icon icon="trash" />
     </button>
 
     <ui-form-group>
-      <ui-dropdown title="Тип" :options="$options.agendaItemTypeOptions" name="type" />
+      <ui-dropdown
+        v-model="internalAgendaItem.type"
+        title="Тип"
+        :options="$options.agendaItemTypeOptions"
+        name="type"
+      />
     </ui-form-group>
 
     <div class="agenda-item-form__row">
       <div class="agenda-item-form__col">
         <ui-form-group label="Начало">
-          <ui-input type="time" placeholder="00:00" name="startsAt" />
+          <ui-input v-model="internalAgendaItem.startsAt" type="time" placeholder="00:00" name="startsAt" />
         </ui-form-group>
       </div>
       <div class="agenda-item-form__col">
         <ui-form-group label="Окончание">
-          <ui-input type="time" placeholder="00:00" name="endsAt" />
+          <ui-input v-model="internalAgendaItem.endsAt" type="time" placeholder="00:00" name="endsAt" />
         </ui-form-group>
       </div>
     </div>
 
-    <ui-form-group label="Заголовок">
-      <ui-input name="title" />
-    </ui-form-group>
-    <ui-form-group label="Описание">
-      <ui-input multiline name="description" />
+    <ui-form-group v-for="uiItem in uiSchema" :key="uiItem.props.name" :label="uiItem.label">
+      <component :is="uiItem.component" v-model="internalAgendaItem[uiItem.props.name]" v-bind="uiItem.props">
+      </component>
     </ui-form-group>
   </fieldset>
 </template>
@@ -79,6 +82,8 @@ const talkLanguageOptions = [
 /** @typedef {string} AgendaItemField */
 /** @typedef {string} AgendaItemType */
 /** @typedef {Object.<AgendaItemType, FormItemSchema>} FormSchema */
+
+const mutableAgendaItemProperties = ['speaker', 'description', 'language'];
 
 /** @type FormSchema */
 const commonAgendaItemFormSchema = {
@@ -151,6 +156,27 @@ const agendaItemFormSchemas = {
   },
 };
 
+function calclNewEndsAt({ oldStartsAt, oldEndsAt, newStartsAt }) {
+  const oldStartsAtHours = Number(oldStartsAt.split(':')[0]);
+  const oldStartsAtMinutes = Number(oldStartsAt.split(':')[1]);
+  const oldStartsAtDate = new Date(0, 0, 0, oldStartsAtHours, oldStartsAtMinutes);
+
+  const endsAtHours = Number(oldEndsAt.split(':')[0]);
+  const endsAtMinutes = Number(oldEndsAt.split(':')[1]);
+  const endsAtDate = new Date(0, 0, 0, endsAtHours, endsAtMinutes);
+
+  const durationMS = endsAtDate.getTime() - oldStartsAtDate.getTime();
+
+  const newStartsAtHours = Number(newStartsAt.split(':')[0]);
+  const newStartsAtMinutes = Number(newStartsAt.split(':')[1]);
+
+  const newEndsAtDate = new Date(0, 0, 0, newStartsAtHours, newStartsAtMinutes, 0, durationMS);
+  const newEndsAtHoursString = newEndsAtDate.getHours().toString().padStart(2, '0');
+  const newEndsAtMinutesString = newEndsAtDate.getMinutes().toString().padStart(2, '0');
+
+  return `${newEndsAtHoursString}:${newEndsAtMinutesString}`;
+}
+
 export default {
   name: 'MeetupAgendaItemForm',
 
@@ -163,6 +189,51 @@ export default {
     agendaItem: {
       type: Object,
       required: true,
+    },
+  },
+
+  emits: ['update:agendaItem', 'remove'],
+
+  data() {
+    return {
+      internalAgendaItem: { ...this.agendaItem },
+    };
+  },
+
+  computed: {
+    uiSchema() {
+      return agendaItemFormSchemas[this.internalAgendaItem.type];
+    },
+    startsAt() {
+      return this.internalAgendaItem.startsAt;
+    },
+  },
+
+  watch: {
+    // по тестам введенные значения не должны удаляться при смене типа
+    // uiSchema: function(newValue) {
+    //   const uiSchemaProperties = Object.keys(newValue);
+    //   mutableAgendaItemProperties.forEach((propertyName) => {
+    //     if(!uiSchemaProperties.includes(propertyName)) {
+    //       this.internalAgendaItem[propertyName] = undefined;
+    //     }
+    //   });
+    // },
+
+    startsAt: function (newValue, oldValue) {
+      this.internalAgendaItem.endsAt = calclNewEndsAt({
+        oldStartsAt: oldValue,
+        newStartsAt: newValue,
+        oldEndsAt: this.internalAgendaItem.endsAt,
+      });
+    },
+
+    internalAgendaItem: {
+      deep: true,
+      handler(newValue) {
+        const eventValue = { ...newValue };
+        this.$emit('update:agendaItem', { ...newValue });
+      },
     },
   },
 };

@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash-es';
+
 import { SensorsDataController } from '../services/SensorsDataController';
 import { SensorsDataStreamingService } from '../services/SensorsDataStreamingService';
 import SensorsDataRow from './SensorsDataRow';
@@ -42,7 +44,18 @@ export default {
     },
 
     setData(sensors) {
-      this.sensors = sensors;
+      // пришли данные из неизвестного источника
+      // лучше полностью отделить данные для компонента от этой неизвестности
+
+      this.sensors = Object.values(sensors).map(({ id, label, value, unit }) => ({ id, label, value, unit }));
+
+      // можно сделать глубокую копию, но не известно насколько глубока структура внешнего объекта
+      // и все равно заранее известно какие от него нужны свойства
+      //this.sensors = cloneDeep(sensors);
+
+      // нет смысла делать ref вокруг полученного объекта
+      // так как неизвестный источник все равно сможет менять свои исходные объекты напрямую
+      // и я об этих изменениях никак не узнаю
     },
   },
 };
